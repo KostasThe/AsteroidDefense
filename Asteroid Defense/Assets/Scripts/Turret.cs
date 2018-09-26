@@ -5,7 +5,7 @@ using UnityEngine;
 public class Turret : MonoBehaviour
 {
     public static Turret Instance;
-    private bool is_Dangerous; // is the asteroid going to hit our precious Earth?
+    private bool isDangerous; // is the asteroid going to hit our precious Earth?
     private const float missileSpeed = 10; // the constant speed of our rockets
     public GameObject missile;
 
@@ -23,8 +23,8 @@ public class Turret : MonoBehaviour
 
     public void ShootAsteroid(GameObject targetedAsteroid, Vector3 asteroidPosition, Vector3 asteroidVelocity)
     {
-        is_Dangerous = TrajectoryWithinSafetyZone(asteroidPosition, asteroidVelocity);
-        if (is_Dangerous)
+        isDangerous = TrajectoryWithinSafetyZone(asteroidPosition, asteroidVelocity);
+        if (isDangerous)
         {
             Vector3 missileVelocity = CalculateMissileVelocity(asteroidPosition, asteroidVelocity);
             FireRocket(targetedAsteroid, missileVelocity);
@@ -36,7 +36,7 @@ public class Turret : MonoBehaviour
         GameObject missileClone = ObjectPooler.Instance.GetPooledObject("Rocket");
         if (missileClone != null)
         {
-            missileClone.GetComponent<Rocket>().m_Target = targetedAsteroid;
+            missileClone.GetComponent<Rocket>().myTarget = targetedAsteroid;
             missileClone.transform.position = this.transform.position;
             missileClone.SetActive(true);
             missileClone.GetComponent<Rigidbody>().velocity = rocket_Velocity;

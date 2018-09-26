@@ -11,7 +11,6 @@ public class GenerateAsteroids : MonoBehaviour {
     private bool locked = false; // flag locked is used in order not to spawn multiple objects and holding down the mouse button
     private bool valid = true;
     private float startTime;
-    private float endTime;
     private Vector3 velocity;
     
     void Awake()
@@ -46,7 +45,6 @@ public class GenerateAsteroids : MonoBehaviour {
                 PrepareAsteroid();
                 GameObject targetedAsteroid = CreateAsteroid();
                 SetAsteroidMovement(targetedAsteroid);
-                
                 Turret.Instance.ShootAsteroid(targetedAsteroid, spawnPos, asteroidRigidbody.velocity);
             }
             locked = false;

@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9d579eb56aeb0c4392dc72a4c66d6a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Target: {fileID: 0}
+  myTarget: {fileID: 0}
 --- !u!136 &136220305123383356
 CapsuleCollider:
   m_ObjectHideFlags: 1

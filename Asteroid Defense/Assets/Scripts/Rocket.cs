@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Rocket : MonoBehaviour {
-    public GameObject m_Target;
+    [HideInInspector] public GameObject myTarget;
     
     void OnTriggerEnter(Collider objectHit)
     {
-        if (objectHit.gameObject.tag == "Asteroid" && objectHit.gameObject == m_Target) //For the sake of simplicity our rocket will hit only the asteroid it was initially aiming to
+        if (objectHit.gameObject.tag == "Asteroid" && objectHit.gameObject == myTarget) //For the sake of simplicity our rocket will hit only the asteroid it was initially aiming to
         {
-            this.gameObject.SetActive(false);
+            SoundManager.Instance.source.PlayOneShot(SoundManager.Instance.explosion);
             objectHit.gameObject.SetActive(false);
+            this.gameObject.SetActive(false);
             GameObject explosion = ObjectPooler.Instance.GetPooledObject("Explosion");
             explosion.transform.position = this.transform.position;
             explosion.gameObject.SetActive(true);
