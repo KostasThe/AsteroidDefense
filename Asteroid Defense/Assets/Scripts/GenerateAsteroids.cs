@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class GenerateAsteroids : MonoBehaviour {
     public static GenerateAsteroids Instance;
-
-    //public GameObject asteroid;
-    public Rigidbody m_Rigidbody;
-
+    public Rigidbody asteroidRigidbody;
     public Vector3 spawnPos;
     public Vector3 mouseCurrLoc;
 
@@ -15,6 +12,7 @@ public class GenerateAsteroids : MonoBehaviour {
     private bool valid = true;
     private float startTime;
     private float endTime;
+    private Vector3 velocity;
     
     void Awake()
     {
@@ -32,7 +30,7 @@ public class GenerateAsteroids : MonoBehaviour {
         if(Input.GetMouseButton(0) && !locked)
         {
             locked = true;
-            valid = AsteroidCanSpawn();
+            valid = CanSpawnAsteroids();
             if (valid)
             {
                 spawnPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -45,41 +43,50 @@ public class GenerateAsteroids : MonoBehaviour {
         {
             if (valid)
             {
-                float endTime = Time.time;
-                float duration = endTime - startTime; // the duration in seconds between the mouse button clicked and mouse button released(drag)
-
-                mouseCurrLoc = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Vector3 direction = mouseCurrLoc - spawnPos;
-
-                float distance = direction.magnitude; // the distance of the drag
-                float power = distance / duration;    // calculate the power by taking into account the distance and duration of the drag
-
-                Vector3 m_Velocity = direction.normalized * power;
-                m_Velocity = new Vector3(m_Velocity.x, m_Velocity.y, 0.0f);
-                m_Velocity = Vector3.ClampMagnitude(m_Velocity, 10);
-
+                PrepareAsteroid();
                 GameObject targetedAsteroid = CreateAsteroid();
-
-                m_Rigidbody.velocity = m_Velocity; // simpl. w/o m_Velocity
-                if (m_Velocity == Vector3.zero)
-                    targetedAsteroid.SetActive(false);
-                Turret.Instance.ShootAsteroid(targetedAsteroid, spawnPos, m_Rigidbody.velocity);
+                SetAsteroidMovement(targetedAsteroid);
+                
+                Turret.Instance.ShootAsteroid(targetedAsteroid, spawnPos, asteroidRigidbody.velocity);
             }
             locked = false;
         }
 	}
+
+    private void PrepareAsteroid()
+    {
+        float endTime = Time.time;
+        float duration = endTime - startTime; // the duration in seconds between the mouse button clicked and mouse button released(drag)
+
+        mouseCurrLoc = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 direction = mouseCurrLoc - spawnPos;
+
+        float distance = direction.magnitude; // the distance of the drag
+        float power = distance / duration;    // calculate the power by taking into account the distance and duration of the drag
+
+        velocity = direction.normalized * power;
+        velocity = new Vector3(velocity.x, velocity.y, 0.0f);
+        velocity = Vector3.ClampMagnitude(velocity, 10);
+    }
 
     private GameObject CreateAsteroid()
     {
         GameObject asteroidClone = ObjectPooler.Instance.GetPooledObject("Asteroid");
         asteroidClone.transform.position = spawnPos;
         asteroidClone.SetActive(true);
-        m_Rigidbody = asteroidClone.GetComponent<Rigidbody>();
+        asteroidRigidbody = asteroidClone.GetComponent<Rigidbody>();
         return asteroidClone;
     }
 
+    private void SetAsteroidMovement(GameObject targetedAsteroid)
+    {
+        asteroidRigidbody.velocity = velocity;
+        if (velocity == Vector3.zero)
+            targetedAsteroid.SetActive(false);
+    }
+
     //is false when we try to create an asteroid upon another object (e.g. safezone, another asteroid..) 
-    private bool AsteroidCanSpawn()
+    private bool CanSpawnAsteroids()
     {
         Vector3 ray = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit hit;

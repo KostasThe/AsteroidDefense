@@ -8,7 +8,7 @@ public class ObjectPoolItem
     public GameObject objectToPool;     //Our Prefab
     public string poolName;            // The pool name (e.g. missiles for the object missile); this is for better organization in the hierarchy
     public int amountToPool;           // the amount of first instantiated objects
-    public bool shouldExpand = true;   // if the above number is "not enough" then grow the poolsize
+    public bool shouldExpand = true;   // if the above number is "not enough" then grow the poolsize.
 }
 
 public class ObjectPooler : MonoBehaviour

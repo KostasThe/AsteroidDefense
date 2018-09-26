@@ -40,6 +40,8 @@ public class Turret : MonoBehaviour
             missileClone.transform.position = this.transform.position;
             missileClone.SetActive(true);
             missileClone.GetComponent<Rigidbody>().velocity = rocket_Velocity;
+            missileClone.GetComponent<Rocket>().RotateRocket(rocket_Velocity);
+            RotateTurret(rocket_Velocity);
         }
     }
 
@@ -126,5 +128,12 @@ public class Turret : MonoBehaviour
         }
         Vector3 missileVelocity = asteroidVelocity + (-asteroidToTurret / t);
         return missileVelocity;
+    }
+
+    //Rotate the turret based on the velocity of the rocket
+    public void RotateTurret(Vector3 rocketVelocity)
+    {
+        float angle = Mathf.Atan2(rocketVelocity.y, rocketVelocity.x) * Mathf.Rad2Deg;
+        this.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 }

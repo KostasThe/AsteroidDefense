@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Asteroid
   - Rocket
+  - Explosion
   layers:
   - Default
   - TransparentFX
