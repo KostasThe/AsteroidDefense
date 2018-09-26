@@ -7,7 +7,7 @@ public class Rocket : MonoBehaviour {
     
     void OnTriggerEnter(Collider objectHit)
     {
-        if (objectHit.gameObject.tag == "Asteroid" && objectHit.gameObject == m_Target)
+        if (objectHit.gameObject.tag == "Asteroid" && objectHit.gameObject == m_Target) //For the sake of simplicity our rocket will hit only the asteroid it was initially aiming to
         {
             this.gameObject.SetActive(false);
             objectHit.gameObject.SetActive(false);

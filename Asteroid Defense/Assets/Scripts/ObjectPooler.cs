@@ -16,7 +16,7 @@ public class ObjectPooler : MonoBehaviour
     public const string DefaultRootObjectPoolName = "Pooled Objects";
 
     public static ObjectPooler Instance;
-    public string rootPoolName = DefaultRootObjectPoolName; // ...
+    public string rootPoolName = DefaultRootObjectPoolName; 
     [HideInInspector] public List<GameObject> pooledObjects;
     public List<ObjectPoolItem> itemsToPool;
 
@@ -49,21 +49,22 @@ public class ObjectPooler : MonoBehaviour
         }
     }
 
+    //Used in order to make the hierarchy a bit more "tidy" and organised.. Can be skipped (and all relevant lines if not necessary
     private GameObject GetParentPoolObject(string objectPoolName)
     {
-        // Use the root object pool name if no name was specified
+        // Use the root object pool name if no other name was given
         if (string.IsNullOrEmpty(objectPoolName))
             objectPoolName = rootPoolName;
 
         GameObject parentObject = GameObject.Find(objectPoolName);
 
-        // Create the parent object if necessary
+        // Create the parent object if null
         if (parentObject == null)
         {
             parentObject = new GameObject();
             parentObject.name = objectPoolName;
 
-            // Add sub pools to the root object pool if necessary
+            // Add sub pools to the root if that's necessary
             if (objectPoolName != rootPoolName)
                 parentObject.transform.parent = GameObject.Find(rootPoolName).transform;
         }

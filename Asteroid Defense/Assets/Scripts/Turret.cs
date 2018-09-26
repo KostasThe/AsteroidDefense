@@ -5,14 +5,9 @@ using UnityEngine;
 public class Turret : MonoBehaviour
 {
     public static Turret Instance;
-    
-    private bool is_Dangerous;
-
-    private const float missileSpeed = 10;
-
+    private bool is_Dangerous; // is the asteroid going to hit our precious Earth?
+    private const float missileSpeed = 10; // the constant speed of our rockets
     public GameObject missile;
-    public Vector3 asteroidPos;
-    public Vector3 asteroidVel;
 
     void Awake()
     {
@@ -28,7 +23,6 @@ public class Turret : MonoBehaviour
 
     public void ShootAsteroid(GameObject targetedAsteroid, Vector3 asteroidPosition, Vector3 asteroidVelocity)
     {
-        //initTime = Time.time; // NN?
         is_Dangerous = TrajectoryWithinSafetyZone(asteroidPosition, asteroidVelocity);
         if (is_Dangerous)
         {
@@ -49,17 +43,17 @@ public class Turret : MonoBehaviour
         }
     }
 
+    //Shoot a ray and check if it hits our safe zone
     private bool TrajectoryWithinSafetyZone(Vector3 asteroidPosition, Vector3 asteroidVelocity)
     {
         int layerMask = 1 << 8;
         RaycastHit hit;
         float raySize = CalculateRaySize(asteroidPosition);
-
-        Debug.DrawRay(asteroidPosition, asteroidVelocity.normalized * raySize, Color.yellow, 10.0f); // Debug.ray must remove 
         if (Physics.Raycast(asteroidPosition, asteroidVelocity.normalized * raySize, out hit, Mathf.Infinity, layerMask))
             return true;
         return false;
     }
+
     //Calculate the length of the ray, by finding the distance between the Earth and the asteroid in order to ensure the ray will be enough to properly check if it hits the safe zone
     private float CalculateRaySize(Vector3 asteroidSpawnPos)
     {
@@ -67,6 +61,12 @@ public class Turret : MonoBehaviour
         return direction.magnitude;
     }
 
+    //All the match required to get the necessary Velocity Vector3.
+    //Basically we want that: 1.length(final asteroid position - turret position) = distance that our rocket has travelled ==> (InitialAsteroidPosition + VelocityAsteroid * t - TurrentPosition) = SpeedOfRocket * t
+    //                     2.final rocket position = final asteroid position ==> InitialPositionRocket + VelocityRocket * t = InitialPositionAsteroid + VelocityAsteroid * t
+    //So we have two equations and two unknown values : time and VelocityRocket
+    //By using Law of Cosines and Dot product we finally get a Quadratic formula which we solve for t (two values of t - choose the "right" one)
+    //Finally we can now solve for VelocityRocket in Eq.2 since we now know t.
     public Vector3 CalculateMissileVelocity(Vector3 asteroidPosition, Vector3 asteroidVelocity)
     {
         float missileSpeedSq = missileSpeed * missileSpeed;
@@ -109,9 +109,9 @@ public class Turret : MonoBehaviour
             }
             else
             {
-                float uglyNumber = Mathf.Sqrt(discriminant);
-                float t0 = 0.5f * (-b + uglyNumber) / a;
-                float t1 = 0.5f * (-b - uglyNumber) / a;
+                float unwantedNum = Mathf.Sqrt(discriminant);
+                float t0 = 0.5f * (-b + unwantedNum) / a;
+                float t1 = 0.5f * (-b - unwantedNum) / a;
 
                 //Assign the lowest positive time to t to aim at the earliest hit
                 t = Mathf.Min(t0, t1);
