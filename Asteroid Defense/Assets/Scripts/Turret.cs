@@ -71,8 +71,9 @@ public class Turret : MonoBehaviour
     //Finally we can now solve for VelocityRocket in Eq.2 since we now know t.
     public Vector3 CalculateMissileVelocity(Vector3 asteroidPosition, Vector3 asteroidVelocity)
     {
+        //most of the following block aims to reduce precision errors
         float missileSpeedSq = missileSpeed * missileSpeed;
-        float asteroidSpeedSq = asteroidVelocity.sqrMagnitude;
+        float asteroidSpeedSq = asteroidVelocity.sqrMagnitude; // Insted of self multiplication in order to increase accuracy
         float asteroidSpeed = Mathf.Sqrt(asteroidSpeedSq);
         Vector3 asteroidToTurret = this.transform.position - asteroidPosition;
         float asteroidToTurretDistSq = asteroidToTurret.sqrMagnitude;
